@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class District extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['division_id', 'name'];
+
+    public function division()
+    {
+        return $this->belongsTo(Division::class);
+    }
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
 }
