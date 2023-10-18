@@ -15,6 +15,10 @@ class Division extends Model
     {
         return $this->belongsTo(Country::class);
     }
+    public function districts()
+    {
+        return $this->hasMany(District::class);
+    }
     public function employees()
     {
         return $this->hasMany(Employee::class);

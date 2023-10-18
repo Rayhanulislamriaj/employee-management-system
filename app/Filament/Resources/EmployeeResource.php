@@ -4,6 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeeResource\Pages;
 use App\Filament\Resources\EmployeeResource\RelationManagers;
+use App\Models\Country;
+use App\Models\District;
+use App\Models\Division;
 use App\Models\Employee;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
@@ -19,11 +22,12 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+
 class EmployeeResource extends Resource
 {
     protected static ?string $model = Employee::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
@@ -32,19 +36,51 @@ class EmployeeResource extends Resource
                 Card::make()
                     ->schema([
                         Select::make('country_id')
-                            ->relationship('country', 'name')->required(),
+                            ->label('Country')
+                            ->options(Country::all()->pluck('name', 'id')->toArray())
+                            ->reactive()
+                            ->afterStateUpdated(fn(callable $set) => $set('division_id', null)),
                         Select::make('division_id')
-                            ->relationship('division', 'name')->required(),
+                            ->label('Division')
+                            ->options(function (callable $get) {
+                                $country = Country::find($get('country_id'));
+                                if (!$country) {
+                                    return Division::all()->pluck('name', 'id');
+                                }
+                                return $country->divisions->pluck('name', 'id');
+                            })
+                            ->reactive()
+                            ->afterStateUpdated(fn(callable $set) => $set('district_id', null)),
                         Select::make('district_id')
-                            ->relationship('district', 'name')->required()->searchable()->preload(),
+                            ->label('District')
+                            ->options(function (callable $get) {
+                                $division = Division::find($get('division_id'));
+                                if (!$division) {
+                                    return District::all()->pluck('name', 'id');
+                                }
+                                return $division->districts->pluck('name', 'id');
+                            })
+                            ->reactive(),
                         Select::make('department_id')
-                            ->relationship('department', 'name')->required(),
-                        TextInput::make('first_name')->required(),
-                        TextInput::make('last_name')->required(),
-                        TextInput::make('address')->required(),
-                        TextInput::make('zip_code')->required(),
-                        DatePicker::make('birth_date')->required(),
-                        DatePicker::make('date_hired')->required(),
+                            ->relationship('department', 'name')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('first_name')
+                            ->required()
+                            ->maxLength(75),
+                        TextInput::make('last_name')
+                            ->required()
+                            ->maxLength(75),
+                        TextInput::make('address')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('zip_code')
+                            ->required()
+                            ->maxLength(4),
+                        DatePicker::make('birth_date')
+                            ->required(),
+                        DatePicker::make('date_hired')
+                            ->required(),
                     ])
             ]);
     }

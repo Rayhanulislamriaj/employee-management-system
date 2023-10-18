@@ -21,7 +21,9 @@ class DistrictResource extends Resource
 {
     protected static ?string $model = District::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-home-modern';
+    protected static ?string $navigationGroup = 'System Management';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -30,8 +32,11 @@ class DistrictResource extends Resource
                 Card::make()
                     ->schema([
                         Select::make('division_id')
-                            ->relationship('Division', 'name')->required(),
-                        TextInput::make('name')->required()
+                            ->relationship('Division', 'name')
+                            ->required(),
+                        TextInput::make('name')
+                            ->required()
+                            ->maxLength(255)
                     ])
             ]);
     }
