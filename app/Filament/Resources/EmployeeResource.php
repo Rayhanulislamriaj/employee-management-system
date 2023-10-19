@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\EmployeeRecourceResource\Widgets\EmployeeStatsOverview;
 use App\Filament\Resources\EmployeeResource\Pages;
 use App\Filament\Resources\EmployeeResource\RelationManagers;
 use App\Models\Country;
@@ -95,7 +96,7 @@ class EmployeeResource extends Resource
                 TextColumn::make('department.name')->sortable()->searchable(),
                 TextColumn::make('date_hired')->date(),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->date()
             ])
             ->filters([
                 SelectFilter::make('department')
@@ -115,6 +116,12 @@ class EmployeeResource extends Resource
     {
         return [
             //
+        ];
+    }
+    public static function getWidgets(): array
+    {
+        return [
+            EmployeeStatsOverview::class,
         ];
     }
 

@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\CountryResource\RelationManagers\EmployeesRelationManager;
 use App\Filament\Resources\DivisionResource\Pages;
 use App\Filament\Resources\DivisionResource\RelationManagers;
+use App\Filament\Resources\DivisionResource\RelationManagers\DistrictsRelationManager;
 use App\Models\Division;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
@@ -33,8 +35,7 @@ class DivisionResource extends Resource
                     ->schema([
                         Select::make('country_id')
                             ->relationship('country', 'name')
-                            ->required()
-                            ->maxLength(255),
+                            ->required(),
                         TextInput::make('name')
                             ->required()
                             ->maxLength(255)
@@ -68,7 +69,8 @@ class DivisionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            EmployeesRelationManager::class,
+            DistrictsRelationManager::class,
         ];
     }
 

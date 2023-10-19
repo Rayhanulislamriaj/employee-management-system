@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DistrictResource\Pages;
 use App\Filament\Resources\DistrictResource\RelationManagers;
+use App\Filament\Resources\DistrictResource\RelationManagers\EmployeesRelationManager;
 use App\Models\District;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
@@ -67,7 +68,7 @@ class DistrictResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            EmployeesRelationManager::class,
         ];
     }
 
